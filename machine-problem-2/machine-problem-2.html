@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Machine Problem 2 | Bottle Collector</title>
+</head>
+
+<body>
+    <script>
+        function calculateEarnings(dailyExpenses, expeditions) {
+            let totalEarnings = 0;
+
+            for (const expedition of expeditions) {
+                // Destructure values from the string
+                const [hoursStr, path, priceStr] = expedition.split(" ");
+                const hours = parseInt(hoursStr);
+                const price = parseFloat(priceStr);
+
+                const pathLength = path.length;
+                const fullLoops = Math.floor(hours / pathLength);
+                const remainingHours = hours % pathLength;
+
+                // Count number of 'B' in full path
+                const bottlesPerLoop = (path.match(/B/g) || []).length;
+
+                // Count number of 'B' in remaining path slice
+                const partialPath = path.slice(0, remainingHours);
+                const bottlesInPartial = (partialPath.match(/B/g) || []).length;
+
+                const totalBottles = (bottlesPerLoop * fullLoops) + bottlesInPartial;
+                const dayEarnings = totalBottles * price;
+
+                totalEarnings += dayEarnings;
+            }
+
+            const numberOfDays = expeditions.length;
+            const averageEarnings = totalEarnings / numberOfDays;
+            const totalExpenses = dailyExpenses * numberOfDays;
+
+            // Round to two decimal places
+            const round = (num) => parseFloat(num.toFixed(2));
+
+            if (averageEarnings > dailyExpenses) {
+                const extraPerDay = round(averageEarnings - dailyExpenses);
+                return `Good earnings. Extra money per day: ${extraPerDay.toFixed(2)}`;
+            } else {
+                const moneyNeeded = round(totalExpenses - totalEarnings);
+                return `Hard times. Money needed: ${moneyNeeded.toFixed(2)}`;
+            }
+        }
+
+        const expenses = 100;
+        const days = [
+            "8 ABMRB 24.50",   // 3 bottles × 24.50 = 73.50
+            "6 BBBB 10.00",     // 6 bottles × 10.00 = 60.00
+            "5 XBYBZ 5.00"      // 2 bottles × 5.00 = 10.00
+        ];
+
+        console.log(calculateEarnings(expenses, days));
+
+    </script>
+</body>
+
+</html>
